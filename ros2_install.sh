@@ -1,99 +1,80 @@
 # ROS2 one-line install
 # Yoon Ho Seol
 
-set -x
+#!/bin/bash
+# Apache License 2.0
+# Copyright (c) 2017, ROBOTIS CO., LTD.
 
-function usage {
-    # Print out usage of this script.
-    echo >&2 "usage: $0 [catkin workspace name (default:catkin_ws)] [ROS distro (default: bionic)"
-    echo >&2 "          [-h|--help] Print help message."
-    exit 0
-}
-# Parse command line. If the number of argument differs from what is expected, call `usage` function.
-OPT=`getopt -o h -l help -- $*`
-if [ $# != 2 ]; then
-    usage
-fi
-eval set -- $OPT
-while [ -n "$1" ] ; do
-    case $1 in
-        -h|--help) usage ;;
-        --) shift; break;;
-        *) echo "Unknown option($1)"; usage;;
-    esac
-done
+echo ""
+echo "[Note] Target OS version  >>> Ubuntu 16.04.x (xenial) or Linux Mint 18.x"
+echo "[Note] Target ROS version >>> ROS Kinetic Kame"
+echo "[Note] Catkin workspace   >>> $HOME/catkin_ws"
+echo ""
+echo "PRESS [ENTER] TO CONTINUE THE INSTALLATION"
+echo "IF YOU WANT TO CANCEL, PRESS [CTRL] + [C]"
+read
 
-name_catkinws=$1
-name_catkinws=${name_catkinws:="catkin_ws"}
-name_ros_distro=$2
-name_ros_distro=${name_ros_distro:="bionic"}
+echo "[Set the target OS, ROS version and name of catkin workspace]"
+name_os_version=${name_os_version:="xenial"}
+name_ros_version=${name_ros_version:="kinetic"}
+name_catkin_workspace=${name_catkin_workspace:="catkin_ws"}
 
-version=`lsb_release -sc`
+echo "[Update the package lists and upgrade them]"
+sudo apt-get update -y
+sudo apt-get upgrade -y
 
-echo "[Checking the ubuntu version]"
-case $version in
-  "bionic")
-  ;;
-  *)
-    echo "ERROR: This script will only work on Ubuntu Bionic(18.03). Exit."
-    exit 0
-esac
-
-echo "[Update & upgrade the package]"
-sudo apt-get update
-sudo apt-get upgrade
-
-echo "[Check the 18.04.3 TLS issue]"
-relesenum=`grep DISTRIB_DESCRIPTION /etc/*-release | awk -F 'Ubuntu ' '{print $2}' | awk -F ' LTS' '{print $1}'`
-if [ "$relesenum" = "18.04.3" ]
-then
-  echo "Your ubuntu version is $relesenum"
-  echo "Intstall the libgl1-mesa-dev-lts-utopic package to solve the dependency issues for the ROS installation specifically on $relesenum"
-  sudo apt-get install -y libgl1-mesa-dev-lts-utopic
-else
-  echo "Your ubuntu version is $relesenum"
-fi
-
-echo "[Installing chrony and setting the ntpdate]"
-sudo apt-get install -y chrony
+echo "[Install build environment, the chrony, ntpdate and set the ntpdate]"
+sudo apt-get install -y chrony ntpdate build-essential
 sudo ntpdate ntp.ubuntu.com
 
 echo "[Add the ROS repository]"
 if [ ! -e /etc/apt/sources.list.d/ros-latest.list ]; then
-  sudo sh -c "echo \"deb http://packages.ros.org/ros/ubuntu ${version} main\" > /etc/apt/sources.list.d/ros-latest.list"
+  sudo sh -c "echo \"deb http://packages.ros.org/ros/ubuntu ${name_os_version} main\" > /etc/apt/sources.list.d/ros-latest.list"
 fi
 
 echo "[Download the ROS keys]"
-roskey=`apt-key list | grep "ROS builder"`
+roskey=`apt-key list | grep "Open Robotics"`
 if [ -z "$roskey" ]; then
-  wget --quiet https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O - | sudo apt-key add -
+  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 fi
 
-echo "[Update & upgrade the package]"
-sudo apt-get update
-sudo apt-get upgrade
+echo "[Check the ROS keys]"
+roskey=`apt-key list | grep "Open Robotics"`
+if [ -n "$roskey" ]; then
+  echo "[ROS key exists in the list]"
+else
+  echo "[Failed to receive the ROS key, aborts the installation]"
+  exit 0
+fi
 
-echo "[Installing ROS]"
-sudo apt-get install -y ros-$name_ros_distro-desktop-full ros-$name_ros_distro-rqt-*
+echo "[Update the package lists and upgrade them]"
+sudo apt-get update -y
+sudo apt-get upgrade -y
 
-echo "[rosdep init and python-rosinstall]"
+echo "[Install the ros-desktop-full and all rqt plugins]"
+sudo apt-get install -y ros-$name_ros_version-desktop-full ros-$name_ros_version-rqt-*
+
+echo "[Initialize rosdep]"
 sudo sh -c "rosdep init"
 rosdep update
-. /opt/ros/$name_ros_distro/setup.sh
+
+echo "[Environment setup and getting rosinstall]"
+source /opt/ros/$name_ros_version/setup.sh
 sudo apt-get install -y python-rosinstall
 
-echo "[Making the catkin workspace and testing the catkin_make]"
-mkdir -p ~/$name_catkinws/src
-cd ~/$name_catkinws/src
+echo "[Make the catkin workspace and test the catkin_make]"
+mkdir -p $HOME/$name_catkin_workspace/src
+cd $HOME/$name_catkin_workspace/src
 catkin_init_workspace
-cd ~/$name_catkinws/
+cd $HOME/$name_catkin_workspace
 catkin_make
 
-echo "[Setting the ROS evironment]"
-sh -c "echo \"source /opt/ros/$name_ros_distro/setup.bash\" >> ~/.bashrc"
-sh -c "echo \"source ~/$name_catkinws/devel/setup.bash\" >> ~/.bashrc"
-sh -c "echo \"export ROS_MASTER_URI=http://localhost:11311\" >> ~/.bashrc"
-sh -c "echo \"export ROS_HOSTNAME=localhost\" >> ~/.bashrc"
+echo "[Set the ROS evironment]"
+sh -c "echo \"alias eb='nano ~/.bashrc'\" >> ~/.bashrc"
+sh -c "echo \"alias sb='source ~/.bashrc'\" >> ~/.bashrc"
+sh -c "echo \"alias gs='git status'\" >> ~/.bashrc"
+sh -c "echo \"alias gp='git pull'\" >> ~/.bashrc"
+
 
 
 echo "[=================]"
@@ -114,16 +95,29 @@ sudo apt install ros-dashing-desktop -y
 source /opt/ros/dashing/setup.bash
 sudo apt install python3-argcomplete -y
 
-echo "[Set the ROS2 Environment]"
-sh -c "echo \"source /opt/ros/dashing/setup.bash\" >> ~/.bashrc"
+echo "[Set the ROS evironment]"
+sh -c "echo \"alias eb='nano ~/.bashrc'\" >> ~/.bashrc"
+sh -c "echo \"alias sb='source ~/.bashrc'\" >> ~/.bashrc"
+sh -c "echo \"alias gs='git status'\" >> ~/.bashrc"
+sh -c "echo \"alias gp='git pull'\" >> ~/.bashrc"
+sh -c "echo \"alias cw='cd ~/$name_catkin_workspace'\" >> ~/.bashrc"
+sh -c "echo \"alias cs='cd ~/$name_catkin_workspace/src'\" >> ~/.bashrc"
+sh -c "echo \"alias cm='cd ~/$name_catkin_workspace && catkin_make'\" >> ~/.bashrc"
+
+sh -c "echo \"source /opt/ros/$name_ros_version/setup.bash\" >> ~/.bashrc"
+sh -c "echo \"source ~/$name_catkin_workspace/devel/setup.bash\" >> ~/.bashrc"
+
+sh -c "echo \"export ROS_MASTER_URI=http://localhost:11311\" >> ~/.bashrc"
+sh -c "echo \"export ROS_HOSTNAME=localhost\" >> ~/.bashrc"
 
 echo "[Install Turtlesim]"
 sudo apt install ros-dashing-turtlesim -y
 
 
 echo "[=================]"
+
+source $HOME/.bashrc
+
 echo "[Complete!!!]"
-
-exec bash
-
 exit 0
+sh -c "echo \"export ROS_HOSTNAME=localhost\" >> ~/.bashrc"
