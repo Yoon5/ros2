@@ -5,7 +5,7 @@
 echo ""
 echo "[Note] Target OS version  >>> Ubuntu 18.04.x (bionic) or Ubuntu Xenial Xerus (16.04)"
 echo "[Note] Target ROS version >>> ROS2 Dashing Diademata"
-#echo "[Note] Target ROS version >>> ROS2 Foxy Fitzroy"
+# echo "[Note] Target ROS version >>> ROS2 Foxy Fitzroy"
 echo "[Note] Catkin workspace   >>> $HOME/catkin_ws"
 echo ""
 echo "PRESS [ENTER] TO CONTINUE THE INSTALLATION"
@@ -84,25 +84,25 @@ sh -c "echo \"alias gs='git status'\" >> ~/.bashrc"
 sh -c "echo \"alias gp='git pull'\" >> ~/.bashrc"
 
 
-
-echo "[=================]"
-
-echo "[Set the Locale]"
+# Added - Setup Locale, Sources, & Install packages
+echo "[Setup Locale]"
 sudo locale-gen en_US en_US.UTF-8
 sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-echo "[Add ROS2 Repository]"
+echo "[Add ROS2 Sources/ apt repository]"
 sudo apt update -y && sudo apt install curl gnupg2 lsb-release -y
 curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
 sudo sh -c 'echo "deb [arch=amd64,arm64] http://packages.ros.org/ros2/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/ros2-latest.list'
 
-echo "[Install ROS2 Dashing Desktop]"
+echo "[Install ROS2 Dashing packages]"
 sudo apt update -y
 sudo apt install ros-dashing-desktop -y
 source /opt/ros/dashing/setup.bash
 sudo apt install python3-argcomplete -y
 
+
+# Added - Edit bashrc
 echo "[Set the ROS evironment]"
 sh -c "echo \"alias eb='nano ~/.bashrc'\" >> ~/.bashrc"
 sh -c "echo \"alias sb='source ~/.bashrc'\" >> ~/.bashrc"
@@ -118,14 +118,12 @@ sh -c "echo \"source ~/$name_catkin_workspace/devel/setup.bash\" >> ~/.bashrc"
 sh -c "echo \"export ROS_MASTER_URI=http://localhost:11311\" >> ~/.bashrc"
 sh -c "echo \"export ROS_HOSTNAME=localhost\" >> ~/.bashrc"
 
+source $HOME/.bashrc
+
+# Added - Install Turtlesim
 echo "[Install Turtlesim]"
 sudo apt install ros-dashing-turtlesim -y
 
 
-echo "[=================]"
-
-source $HOME/.bashrc
-
 echo "[Complete!!!]"
 exit 0
-sh -c "echo \"export ROS_HOSTNAME=localhost\" >> ~/.bashrc"
