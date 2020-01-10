@@ -3,7 +3,7 @@
 # Copuright (c) 2020, Yoon Ho Seol.
 
 echo ""
-echo "[Note] Target OS version  >>> Ubuntu 18.04.x (bionic) or Ubuntu Xenial Xerus (16.04)"
+echo "[Note] Target OS version  >>> Ubuntu 18.04.x (bionic) or Ubuntu Xenial Xerus (16.04)" # Xenial Xerus would be deleted after Crystal 
 echo "[Note] Target ROS version >>> ROS2 Dashing Diademata"
 # echo "[Note] Target ROS version >>> ROS2 Foxy Fitzroy"
 echo "[Note] Catkin workspace   >>> $HOME/catkin_ws"
@@ -12,6 +12,7 @@ echo "PRESS [ENTER] TO CONTINUE THE INSTALLATION"
 echo "IF YOU WANT TO CANCEL, PRESS [CTRL] + [C]"
 read
 
+# Added - Check Ubuntu version
 echo "[Check ubuntu version]"
 case $version in
   "bionic" | "xenial")
@@ -108,17 +109,18 @@ sh -c "echo \"alias eb='nano ~/.bashrc'\" >> ~/.bashrc"
 sh -c "echo \"alias sb='source ~/.bashrc'\" >> ~/.bashrc"
 sh -c "echo \"alias gs='git status'\" >> ~/.bashrc"
 sh -c "echo \"alias gp='git pull'\" >> ~/.bashrc"
-sh -c "echo \"alias cw='cd ~/$name_catkin_workspace'\" >> ~/.bashrc"
-sh -c "echo \"alias cs='cd ~/$name_catkin_workspace/src'\" >> ~/.bashrc"
-sh -c "echo \"alias cm='cd ~/$name_catkin_workspace && catkin_make'\" >> ~/.bashrc"
+# sh -c "echo \"alias cw='cd ~/$name_catkin_workspace'\" >> ~/.bashrc"
+# sh -c "echo \"alias cs='cd ~/$name_catkin_workspace/src'\" >> ~/.bashrc"
+# sh -c "echo \"alias cm='cd ~/$name_catkin_workspace && catkin_make'\" >> ~/.bashrc"
 
 sh -c "echo \"source /opt/ros/$name_ros_version/setup.bash\" >> ~/.bashrc"
-sh -c "echo \"source ~/$name_catkin_workspace/devel/setup.bash\" >> ~/.bashrc"
+# sh -c "echo \"source ~/$name_catkin_workspace/devel/setup.bash\" >> ~/.bashrc"
 
-sh -c "echo \"export ROS_MASTER_URI=http://localhost:11311\" >> ~/.bashrc"
-sh -c "echo \"export ROS_HOSTNAME=localhost\" >> ~/.bashrc"
+# sh -c "echo \"export ROS_MASTER_URI=http://localhost:11311\" >> ~/.bashrc"
+# sh -c "echo \"export ROS_HOSTNAME=localhost\" >> ~/.bashrc"
 
 source $HOME/.bashrc
+
 
 # Added - Install Turtlesim
 echo "[Install Turtlesim]"
