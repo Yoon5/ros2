@@ -5,6 +5,7 @@
 echo ""
 echo "[Note] Target OS version  >>> Ubuntu 18.04.x (bionic) or Ubuntu Xenial Xerus (16.04)"
 echo "[Note] Target ROS version >>> ROS2 Dashing Diademata"
+#echo "[Note] Target ROS version >>> ROS2 Foxy Fitzroy"
 echo "[Note] Catkin workspace   >>> $HOME/catkin_ws"
 echo ""
 echo "PRESS [ENTER] TO CONTINUE THE INSTALLATION"
@@ -23,6 +24,7 @@ esac
 echo "[Set the target OS, ROS version and name of catkin workspace]"
 name_os_version=${name_os_version:="bionic"}
 name_ros_version=${name_ros_version:="dashing"}
+# name_ros_version=${name_ros_version:="oxy"}
 name_catkin_workspace=${name_catkin_workspace:="catkin_ws"}
 
 echo "[Update the package lists and upgrade them]"
