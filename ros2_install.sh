@@ -1,22 +1,28 @@
 # ROS2 one-line install
-# Yoon Ho Seol
-
-#!/bin/bash
 # Apache License 2.0
-# Copyright (c) 2017, ROBOTIS CO., LTD.
+# Copuright (c) 2020, Yoon Ho Seol.
 
 echo ""
-echo "[Note] Target OS version  >>> Ubuntu 16.04.x (xenial) or Linux Mint 18.x"
-echo "[Note] Target ROS version >>> ROS Kinetic Kame"
+echo "[Note] Target OS version  >>> Ubuntu 18.04.x (bionic) or Ubuntu Xenial Xerus (16.04)"
+echo "[Note] Target ROS version >>> ROS2 Dashing Diademata"
 echo "[Note] Catkin workspace   >>> $HOME/catkin_ws"
 echo ""
 echo "PRESS [ENTER] TO CONTINUE THE INSTALLATION"
 echo "IF YOU WANT TO CANCEL, PRESS [CTRL] + [C]"
 read
 
+echo "[Check ubuntu version]"
+case $version in
+  "bionic" | "xenial")
+  ;;
+  *)
+    echo "ERROR: This script will only work on Ubuntu Bionic Beaver (18.04) and Xenial Xerus (16.04). Exit."
+    exit 0
+esac
+
 echo "[Set the target OS, ROS version and name of catkin workspace]"
-name_os_version=${name_os_version:="xenial"}
-name_ros_version=${name_ros_version:="kinetic"}
+name_os_version=${name_os_version:="bionic"}
+name_ros_version=${name_ros_version:="dashing"}
 name_catkin_workspace=${name_catkin_workspace:="catkin_ws"}
 
 echo "[Update the package lists and upgrade them]"
