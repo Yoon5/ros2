@@ -2,6 +2,8 @@
 # Apache License 2.0
 # Copuright (c) 2020, Yoon Ho Seol.
 
+#!/bin/bash #following lines are written for bash; execute this file as bash scrip
+
 echo ""
 echo "[Note] Target OS version  >>> Ubuntu 18.04.x (bionic) or Ubuntu Xenial Xerus (16.04)" # Xenial Xerus would be deleted after Crystal 
 echo "[Note] Target ROS version >>> ROS2 Dashing Diademata"
